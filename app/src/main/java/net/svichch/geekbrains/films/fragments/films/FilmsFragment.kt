@@ -1,4 +1,4 @@
-package net.svichch.geekbrains.films
+package net.svichch.geekbrains.films.fragments.films
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,37 +9,31 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.schedulers.Schedulers
+import net.svichch.geekbrains.films.MainActivity
 import net.svichch.geekbrains.films.databinding.FragmentItemListBinding
+
+import net.svichch.geekbrains.films.fragments.details.FilmInfoFragment
 import net.svichch.geekbrains.films.nework.api.ApiHolder
 import net.svichch.geekbrains.films.nework.api.retrofit.RetrofitFilms
 import net.svichch.geekbrains.films.nework.api.movie.Result
 import net.svishch.android.outerspace.mvp.model.image.GlideImageLoader
 
-class ItemFilmsFragment : Fragment() {
+class FilmsFragment : Fragment(), FilmsAdapter.AdapterFilmsRecyclerFunctional {
 
     private var columnCount = 2
     private lateinit var fragment: FragmentItemListBinding
-    private lateinit var adapter: FilmsRecyclerAdapter
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        arguments?.let {
-            columnCount = it.getInt(ARG_COLUMN_COUNT)
-        }
-    }
+    private lateinit var adapter: FilmsAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
+        setButtonBackOff()
         fragment = FragmentItemListBinding.inflate(inflater, container, false)
-        fragment.list.layoutManager =  GridLayoutManager(context, columnCount)
+        fragment.list.layoutManager = GridLayoutManager(context, columnCount)
         loadData()
         return fragment.root
     }
-
 
     fun loadData() {
 
@@ -55,20 +49,25 @@ class ItemFilmsFragment : Fragment() {
     }
 
     private fun addAdapter(results: List<Result>) {
-        adapter = FilmsRecyclerAdapter(results, GlideImageLoader())
-        fragment.root.adapter = adapter
+        adapter = FilmsAdapter(results, GlideImageLoader(), this)
+        fragment.list.adapter = adapter
+    }
+
+    // Переход на фрагмент информации о фильме
+    override fun toFilmInfoFragment(film: Result) {
+        (requireActivity() as MainActivity).navigateTo(
+            FilmInfoFragment.newInstance(film)
+        )
+    }
+
+    private fun setButtonBackOff() {
+        val actionBar = (requireActivity() as MainActivity).getSupportActionBar()
+        actionBar?.setHomeButtonEnabled(false)
+        actionBar?.setDisplayHomeAsUpEnabled(false)
     }
 
     companion object {
-
-        const val ARG_COLUMN_COUNT = "films"
-
         @JvmStatic
-        fun newInstance(columnCount: Int) =
-            ItemFilmsFragment().apply {
-                arguments = Bundle().apply {
-                    putInt(ARG_COLUMN_COUNT, columnCount)
-                }
-            }
+        fun newInstance() = FilmsFragment()
     }
 }

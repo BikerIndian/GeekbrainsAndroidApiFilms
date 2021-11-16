@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/cardview_light_background"
+    android:background="@color/grey"
     android:foreground="?attr/selectableItemBackground"
     android:gravity="center_vertical"
     android:orientation="vertical">
@@ -13,12 +13,12 @@
         android:id="@+id/iv_linear_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="5dp"
-        app:cardCornerRadius="10dp"
+        android:layout_margin="@dimen/margin_5"
+        app:cardCornerRadius="@dimen/radius"
         app:cardElevation="10dp">
 
         <LinearLayout
-            android:id="@+id/linear_layout"
+            android:id="@+id/itemFilm"
             android:layout_width="match_parent"
             android:layout_height="300dp"
             android:background="@color/cardview_light_background"
@@ -28,7 +28,7 @@
                 android:id="@+id/iv_img"
                 android:layout_width="match_parent"
                 android:layout_height="200sp"
-                android:layout_margin="10dp"
+                android:layout_margin="@dimen/margin_10"
                 tools:src="@tools:sample/avatars" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -39,7 +39,8 @@
                     android:id="@+id/title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="5dp"
+                    android:layout_marginStart="@dimen/margin_5"
+                    android:textColor="@color/black"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     tools:text="title" />
@@ -49,7 +50,8 @@
                     android:id="@+id/text_release"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="5dp"
+                    android:layout_marginStart="@dimen/margin_5"
+                    android:layout_marginEnd="@dimen/margin_5"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/title"
                     android:text="@string/release_date" />
@@ -58,7 +60,9 @@
                     android:id="@+id/release_date"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="5dp"
+                    android:textColor="@color/black"
+                    android:layout_marginStart="@dimen/margin_5"
+                    android:layout_marginEnd="@dimen/margin_5"
                     app:layout_constraintStart_toEndOf="@+id/text_release"
                     app:layout_constraintTop_toTopOf="@+id/text_release"
                     tools:text="date" />
@@ -67,7 +71,8 @@
                     android:id="@+id/text_vote"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="5dp"
+                    android:layout_marginStart="@dimen/margin_5"
+                    android:layout_marginEnd="@dimen/margin_5"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/text_release"
                     android:text="@string/vote" />
@@ -76,8 +81,9 @@
                     android:id="@+id/vote"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="2dp"
-                    android:layout_marginStart="5dp"
+                    android:textColor="@color/black"
+                    android:layout_marginStart="@dimen/margin_5"
+                    android:layout_marginEnd="@dimen/margin_5"
                     app:layout_constraintStart_toEndOf="@+id/text_vote"
                     app:layout_constraintTop_toTopOf="@+id/text_vote"
                     tools:text="vote" />
