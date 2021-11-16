@@ -1,21 +1,25 @@
 package net.svichch.geekbrains.films
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import net.svichch.geekbrains.films.placeholder.PlaceholderContent
+import android.widget.Toast
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.GridLayoutManager
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.schedulers.Schedulers
+import net.svichch.geekbrains.films.databinding.FragmentItemListBinding
+import net.svichch.geekbrains.films.nework.api.ApiHolder
+import net.svichch.geekbrains.films.nework.api.retrofit.RetrofitFilms
+import net.svichch.geekbrains.films.nework.api.movie.Result
+import net.svishch.android.outerspace.mvp.model.image.GlideImageLoader
 
-/**
- * A fragment representing a list of Items.
- */
 class ItemFilmsFragment : Fragment() {
 
-    private var columnCount = 1
+    private var columnCount = 2
+    private lateinit var fragment: FragmentItemListBinding
+    private lateinit var adapter: FilmsRecyclerAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,19 +33,30 @@ class ItemFilmsFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_item_list, container, false)
 
-        // Set the adapter
-        if (view is RecyclerView) {
-            with(view) {
-                layoutManager = when {
-                    columnCount <= 1 -> LinearLayoutManager(context)
-                    else -> GridLayoutManager(context, columnCount)
-                }
-                adapter = FilmsRecyclerAdapter(PlaceholderContent.ITEMS)
-            }
-        }
-        return view
+        fragment = FragmentItemListBinding.inflate(inflater, container, false)
+        fragment.list.layoutManager =  GridLayoutManager(context, columnCount)
+        loadData()
+        return fragment.root
+    }
+
+
+    fun loadData() {
+
+        RetrofitFilms(ApiHolder().api).getFilms()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({ films ->
+                films.results?.let { addAdapter(it) }
+            }, {
+                Toast.makeText(context, it.message, Toast.LENGTH_SHORT).show()
+            })
+
+    }
+
+    private fun addAdapter(results: List<Result>) {
+        adapter = FilmsRecyclerAdapter(results, GlideImageLoader())
+        fragment.root.adapter = adapter
     }
 
     companion object {
